@@ -1,0 +1,19 @@
+{% extends 'event_track_base.html' %}
+
+{% block content %}
+
+<h3>Regitration</h3>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ registration_form }}
+
+    <button style="font-size: 15px; margin-top: 10px;" type="submit">Register</button>
+</form>
+
+<div>
+    <a style="margin: .5rem;" href="/events/">Back to home page</a>
+    <a style="margin: .5rem;" href="/events/login/">Login?</a>
+</div>
+{% endblock %}
