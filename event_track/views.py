@@ -3,21 +3,24 @@ from django.http import HttpResponse
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 
-from .forms import UserRegistrationForm, UserUpdateForm
+from .forms import UserRegistrationForm, UserUpdateForm, EventForm
+from .models import Event
 
 # from rest_framework.decorators import api_view
 
 
 # Create your views here.
 def event_home(request):
-    current_user = str(request.user)
-    print(current_user)
-    request.session['previous_page'] = 'event_home'
-    if current_user == 'AnonymousUser':
-        return render(request, 'event_track_home.html', {'user': None})
+    current_user = request.user
+    events = Event.objects.all()
     
-    return render(request, 'event_track_home.html', {'user': current_user})
+    request.session['previous_page'] = 'event_home'
+    if str(current_user) == 'AnonymousUser':
+        return render(request, 'event_track_home.html', {'user': None, 'events': events})
+    
+    return render(request, 'event_track_home.html', {'user': current_user, 'events': events})
 
 def authorize_user(request):
     current_user = str(request.user)
@@ -57,11 +60,13 @@ def register_user(request):
 
     return render(request, 'user_registration.html', {'registration_form': registration_form})
 
+@login_required
 def user_profile(request):
     user = str(request.user)
     if user != 'AnonymousUser':
         return render(request, 'user_profile.html', {'user': request.user})
 
+@login_required
 def update_user(request):
     username = str(request.user)
     if username != 'AnonymousUser':
@@ -76,3 +81,72 @@ def update_user(request):
             return render(request, 'user_update.html', {'user_profile_form': form})
     
     return redirect('authorize_user')
+
+@login_required
+def add_event(request):
+    current_user = request.user
+    event_form = EventForm()
+    
+    if request.method == 'POST':
+        event_form = EventForm(data=request.POST)
+        if event_form.is_valid():
+            event = event_form.save(commit=False)
+            event.organizer = current_user
+            event.save()
+            return redirect('event_home')
+
+    return render(request, 'event_add.html', {'event_form': event_form, 'user': current_user})
+
+def event_details(request, id):
+    try:
+        event = Event.objects.get(pk=id)
+        return render(request, 'event_details.html', {'event': event})
+    except Event.DoesNotExist:
+        return render(request, 'event_not_found.html')
+    
+
+@login_required
+def my_events(request):
+    current_user = request.user
+    events = Event.objects.filter(organizer=current_user).all()
+
+    return render(request, 'event_mine.html', {'events': events})
+
+@login_required
+def update_event(request, id):
+    current_user = request.user
+    try:
+        event = Event.objects.get(pk=id)
+        events = Event.objects.filter(organizer=current_user).values_list('id', flat=True)
+        event_ids = set(events)
+        if id not in event_ids:
+            return render(request, 'event_permission.html')
+        
+        form = EventForm(instance=event)
+        
+        if request.method == 'POST':
+            form = EventForm(data=request.POST, instance=event)
+            if form.is_valid():
+                form.save()
+                return redirect('my_events')
+        
+        return render(request, 'event_update.html', {'event_form': form})
+    
+    except Event.DoesNotExist:
+        return render(request, 'event_not_found.html')
+    
+
+@login_required
+def delete_event(request, id):
+    current_user = request.user
+    try:
+        event = Event.objects.get(pk=id)
+        events = Event.objects.filter(organizer=current_user).values_list('id', flat=True)
+        event_ids = set(events)
+        if id not in event_ids:
+            return render(request, 'event_permission.html')
+        else:
+            event.delete()
+            return redirect('event_home')
+    except Event.DoesNotExist:
+        return render(request, 'event_not_found.html')

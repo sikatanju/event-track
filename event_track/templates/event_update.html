@@ -1,0 +1,14 @@
+{% extends 'event_track_base.html' %}
+
+{% block content %}
+
+<h3>Update Event</h3>
+<h4>{{user.username|add:'--'}}{{user.id}}</h4>
+<form method="post">
+    {% csrf_token %}
+
+    {{ event_form }}
+
+    <button style="font-size: 15px; margin-top: 10px;" type="submit">Submit</button>
+</form>
+{% endblock %}

@@ -3,11 +3,11 @@
 {% block content %}
 
 <h2>Home Page</h2>
-<h4>{{ request.user }}</h4>
+<h4>{{ user.username|add:" - "}}{{user.id}}</h4>
 <nav style="margin-bottom: 10px;">
     <div style="margin: 0;">
-        <a style="margin-right: .5rem; margin-left: 0; padding-left: 0;" href="add/">Add an event</a>
-        <a style="margin: .5rem;" href="update/">Update event Page</a>
+        <a style="margin-right: .5rem; margin-left: 0; padding-left: 0;" href="add-event/">Add an event</a>
+        <a style="margin: .5rem;" href="my-events/">My Events</a>
         <a style="margin: .5rem;" href="delete/">Delete event Page</a>
     </div>
 </nav>
@@ -23,24 +23,19 @@
     </div>
 </nav>
 <div>
-    {% if employees %}
+    {% if events %}
     <table style="width: 900px;">
         <tr>
             <th style="width: 150px;">Name</th>
-            <th style="width: 350px;">Address</th>
-            <th>Phone</th>
-            <th>Designation</th>
-            <th>Salary</th>
-            <th style="width: 400px;">Description</th>
+            <th style="width: 350px;">Location</th>
+            <th>Date</th>
         </tr>
-        {% for employee in employees %}
+        {% for event in events %}
         <tr>
-            <td>{{employee.name}}</td>
-            <td>{{employee.address}}</td>
-            <td>{{employee.phone}}</td>
-            <td>{{employee.designation}}</td>
-            <td>{{employee.salary}}</td>
-            <td>{{employee.description}}</td>
+            <td>{{event.name}}</td>
+            <td>{{event.location}}</td>
+            <td>{{event.date}}</td>
+            <td><a href="{% url 'event_details' event.id %}">Details</a></td>
         </tr>
         {% endfor %}
     </table>

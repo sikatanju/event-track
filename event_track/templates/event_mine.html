@@ -1,0 +1,40 @@
+{% extends 'event_track_base.html' %}
+
+{% block content %}
+
+<h2>My Events</h2>
+<h4>{{ user.username|add:" - "}}{{user.id}}</h4>
+<nav style="margin-bottom: 10px;">
+    <div style="margin: 0;">
+        <a style="margin-right: .5rem; margin-left: 0; padding-left: 0;" href="{% url 'event_home' %}">Home Page</a>
+    </div>
+</nav>
+<div>
+    {% if events %}
+    <table style="width: 900px;">
+        <tr>
+            <th>Name</th>
+            <th>Desciption</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Organizer</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% for event in events %}
+        <tr>
+            <td>{{event.name}}</td>
+            <td>{{event.description}}</td>
+            <td>{{event.location}}</td>
+            <td>{{event.date}}</td>
+            <td>{{event.organizer}}</td>
+            <td><a href="{% url 'update_event' event.id %}">Update</a></td>
+            <td><a href="{% url 'delete_event' event.id %}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <h3>Currently there are no events organized by you.</h3>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'event_track_base.html' %}
+
+{% block content %}
+<h2>Event Detail</h2>
+<div>
+    {% if event %}
+    <table style="width: 900px;">
+        <tr>
+            <th>Name</th>
+            <th>Desciption</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Organizer</th>
+        </tr>
+        <tr>
+            <td>{{event.name}}</td>
+            <td>{{event.description}}</td>
+            <td>{{event.location}}</td>
+            <td>{{event.date}}</td>
+            <td>{{event.organizer}}</td>
+        </tr>
+    </table>
+    {% endif %}
+</div>
+
+<div>
+    <a style="margin-top: 2rem;" href="{% url 'event_home' %}">Home page</a>
+</div>
+{% endblock %}
