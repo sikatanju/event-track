@@ -7,8 +7,8 @@
 <nav style="margin-bottom: 10px;">
     <div style="margin: 0;">
         <a style="margin-right: .5rem; margin-left: 0; padding-left: 0;" href="add-event/">Add an event</a>
-        <a style="margin: .5rem;" href="my-events/">My Events</a>
-        <a style="margin: .5rem;" href="delete/">Delete event Page</a>
+        <a style="margin: .5rem;" href="my-events/">Manage Events</a>
+        <a style="margin: .5rem;" href="{% url 'my_booked_events' %}">My Booked Events</a>
     </div>
 </nav>
 <nav>
@@ -24,11 +24,13 @@
 </nav>
 <div>
     {% if events %}
-    <table style="width: 900px;">
+    <table style="width: 950px;">
         <tr>
-            <th style="width: 150px;">Name</th>
-            <th style="width: 350px;">Location</th>
-            <th>Date</th>
+            <th style="width: 300px;">Name</th>
+            <th style="width: 200px;">Location</th>
+            <th style="width: 200px;">Date</th>
+            <th style="width: 100px;" />
+            <th style="width: 150px;" />
         </tr>
         {% for event in events %}
         <tr>
@@ -36,6 +38,13 @@
             <td>{{event.location}}</td>
             <td>{{event.date}}</td>
             <td><a href="{% url 'event_details' event.id %}">Details</a></td>
+            {% if event.id in booked_event_ids %}
+            <td>Booked</td>
+            {% elif event.is_full %}
+            <td>Fully Booked</td>
+            {% else %}
+            <td><a href="{% url 'book_an_event' event.id %}">Book</a></td>
+            {% endif %}
         </tr>
         {% endfor %}
     </table>

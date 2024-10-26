@@ -9,6 +9,14 @@ class Event(models.Model):
     location = models.CharField(max_length=255)
     capacity = models.PositiveIntegerField(default=10)
     organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
+    # category = models.CharField(max_length=100)
+
+    def available_slots(self):
+        return self.capacity - self.booked_events.count()
+    
+    @property
+    def is_full(self):
+        return self.booked_events.count() >= self.capacity
 
     def __str__(self):
         return f'Event: {self.name}'
@@ -18,6 +26,9 @@ class BookedEvent(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='booked_events')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='booked_events')
     booked_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('event', 'user')
 
     def __str__(self):
         return f'{self.user.username} booked {self.event.name}'
