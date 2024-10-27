@@ -2,21 +2,22 @@
 
 {% block content %}
 
-<h2>My Events</h2>
-<h4>{{ user.username|add:" - "}}{{user.id}}</h4>
-<nav style="margin-bottom: 10px;">
+<h2 style="margin-left: -200px;">My Events</h2>
+<h4 style="margin-left: -200px;">{{ user.username|add:" - "}}{{user.id}}</h4>
+<nav style="margin-bottom: 10px; margin-left: -200px;">
     <div style="margin: 0;">
         <a style="margin-right: .5rem; margin-left: 0; padding-left: 0;" href="{% url 'event_home' %}">Home Page</a>
     </div>
 </nav>
 <div>
     {% if events %}
-    <table style="width: 900px;">
+    <table style="width: 1200px; margin-left: -200px;">
         <tr>
-            <th>Name</th>
+            <th style="width: 220px;">Name</th>
             <th>Desciption</th>
             <th>Location</th>
-            <th>Date</th>
+            <th style="width: 100px;">Date</th>
+            <th style="width: 120px;">Category</th>
             <th>Organizer</th>
             <th></th>
             <th></th>
@@ -27,6 +28,7 @@
             <td>{{event.description}}</td>
             <td>{{event.location}}</td>
             <td>{{event.date}}</td>
+            <td>{{event.category}}</td>
             <td>{{event.organizer}}</td>
             <td><a href="{% url 'update_event' event.id %}">Update</a></td>
             <td><a href="{% url 'delete_event' event.id %}">Delete</a></td>

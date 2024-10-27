@@ -22,6 +22,14 @@
         {% endif %}
     </div>
 </nav>
+<div style="margin: 40px 40px 20px 0;">
+    <form method="GET" action="">
+        <input type="text" name="query" placeholder="Search by name, date, or location" value="{{ query }}"
+            style="margin-bottom: 10px; width:300px" />
+        <button type="submit">Search</button>
+    </form>
+    <span style="color:bisque; font-size: 14px;">Supported format for searching by date is: `Dec. 5, 2024` or `2024-12-05`</span>
+</div>
 <div>
     {% if events %}
     <table style="width: 950px;">
@@ -41,7 +49,7 @@
             {% if event.id in booked_event_ids %}
             <td>Booked</td>
             {% elif event.is_full %}
-            <td>Fully Booked</td>
+            <td>Sold Out</td>
             {% else %}
             <td><a href="{% url 'book_an_event' event.id %}">Book</a></td>
             {% endif %}

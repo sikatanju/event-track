@@ -2,6 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Event(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -9,7 +18,7 @@ class Event(models.Model):
     location = models.CharField(max_length=255)
     capacity = models.PositiveIntegerField(default=10)
     organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
-    # category = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, related_name='events')
 
     def available_slots(self):
         return self.capacity - self.booked_events.count()

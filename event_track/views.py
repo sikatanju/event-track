@@ -1,9 +1,12 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 from .forms import UserRegistrationForm, UserUpdateForm, EventForm
 from .models import Event, BookedEvent
@@ -14,7 +17,25 @@ from .models import Event, BookedEvent
 # Create your views here.
 def event_home(request):
     current_user = request.user
+    query = request.GET.get('query')
     events = Event.objects.all()
+
+
+    if query:
+        try:
+            query_date = datetime.strptime(query, "%b. %d, %Y")
+            print(query_date)
+            events = events.filter(date__date=query_date)
+        except ValueError:
+            events = events.filter(
+                Q(name__icontains=query) | 
+                Q(location__icontains=query) |
+                Q(date__icontains=query)  # This will still work for exact date string matches
+            )
+
+
+    # query_date = datetime.strptime(query, "%b. %d, %Y")
+    
     request.session['previous_page'] = 'event_home'
     if str(current_user) == 'AnonymousUser':
         return render(request, 'event_track_home.html', {'user': None, 'events': events})
