@@ -2,21 +2,22 @@
 
 {% block content %}
 
-<h2>My Booked Events</h2>
-<h4>{{ user.username|add:" - "}}{{user.id}}</h4>
-<nav style="margin-bottom: 10px;">
+<h2 style=" margin-left: -150px;">My Booked Events</h2>
+<h4 style=" margin-left: -150px;">{{ user.username|add:" - "}}{{user.id}}</h4>
+<nav style="margin-bottom: 10px;  margin-left: -150px;">
     <div style="margin: 0;">
         <a style="margin-right: .5rem; margin-left: 0; padding-left: 0;" href="{% url 'event_home' %}">Home Page</a>
     </div>
 </nav>
 <div>
     {% if events %}
-    <table style="width: 900px;">
+    <table style="width: 1050px; margin-left: -150px;">
         <tr>
             <th>Name</th>
             <th>Desciption</th>
             <th>Location</th>
             <th>Date</th>
+            <th>Category</th>
             <th>Organizer</th>
         </tr>
         {% for event in events %}
@@ -25,6 +26,7 @@
             <td>{{event.description}}</td>
             <td>{{event.location}}</td>
             <td>{{event.date}}</td>
+            <td>{{event.category}}</td>
             <td>{{event.organizer}}</td>
         </tr>
         {% endfor %}

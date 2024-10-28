@@ -2,16 +2,15 @@
 
 {% block content %}
 
-<h2>Home Page</h2>
-<h4>{{ user.username|add:" - "}}{{user.id}}</h4>
-<nav style="margin-bottom: 10px;">
+<h2 style="margin-left: -100px;">Home Page</h2>
+<nav style="margin-bottom: 10px; margin-left: -100px;">
     <div style="margin: 0;">
         <a style="margin-right: .5rem; margin-left: 0; padding-left: 0;" href="add-event/">Add an event</a>
         <a style="margin: .5rem;" href="my-events/">Manage Events</a>
         <a style="margin: .5rem;" href="{% url 'my_booked_events' %}">My Booked Events</a>
     </div>
 </nav>
-<nav>
+<nav style="margin-left: -100px;">
     <div style="margin:0">
         {% if not user %}
         <a href="{% url 'authorize_user' %}">Login</a>
@@ -22,9 +21,34 @@
         {% endif %}
     </div>
 </nav>
+
+<div style="margin: 40px 40px 20px 0; margin-left: -100px;">
+    <form method="GET">
+        <input type="text" name="query" placeholder="Search by name, date, or location" value="{{ query }}"
+            style="margin-bottom: 10px; width:300px" />
+        <button type="submit">Search</button>
+    </form>
+    <span style="color:bisque; font-size: 14px;">Supported format for searching by date is: `Dec. 5, 2024` or
+        `2024-12-05`</span>
+</div>
+
+<div>
+    <form method="GET" style="margin-left: -100px;">
+        <select name="category" onchange="this.form.submit()">
+            <option value="" selected>All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category.name}}" {% if category.name == selected_category %}selected{% endif %}>
+                {{ category }}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+
 <div>
     {% if events %}
-    <table style="width: 950px;">
+    <table style="width: 950px; margin-left: -100px;">
         <tr>
             <th style="width: 300px;">Name</th>
             <th style="width: 200px;">Location</th>
@@ -40,8 +64,10 @@
             <td><a href="{% url 'event_details' event.id %}">Details</a></td>
             {% if event.id in booked_event_ids %}
             <td>Booked</td>
+            {% elif event.id in my_events_ids %}
+            <td>My event</td>
             {% elif event.is_full %}
-            <td>Fully Booked</td>
+            <td>Sold Out</td>
             {% else %}
             <td><a href="{% url 'book_an_event' event.id %}">Book</a></td>
             {% endif %}

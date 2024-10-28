@@ -21,7 +21,7 @@ class UserUpdateForm(UserChangeForm):
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['name', 'description', 'location', 'date', 'capacity']
+        fields = ['name', 'description', 'location', 'date', 'capacity', 'category']
 
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Event Name'}),

@@ -1,12 +1,15 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 from .forms import UserRegistrationForm, UserUpdateForm, EventForm
-from .models import Event, BookedEvent
+from .models import Event, BookedEvent, Category
 
 # from rest_framework.decorators import api_view
 
@@ -14,13 +17,42 @@ from .models import Event, BookedEvent
 # Create your views here.
 def event_home(request):
     current_user = request.user
+    
     events = Event.objects.all()
+    categories = Category.objects.all()
+
+    query = str.strip(request.GET.get('query'))
+    selected_category = request.GET.get('category')
+
+    if query:
+        try:
+            query_date = datetime.strptime(query, "%b. %d, %Y")
+            print(query_date)
+            events = events.filter(date__date=query_date)
+        except ValueError:
+            events = events.filter(
+                Q(name__icontains=query) | 
+                Q(location__icontains=query) |
+                Q(date__icontains=query)
+            )
+
+    if selected_category is not None and selected_category is not '':
+        selected_category_id = Category.objects.get(name=selected_category)
+        events = events.filter(category=selected_category_id)
+    
     request.session['previous_page'] = 'event_home'
     if str(current_user) == 'AnonymousUser':
-        return render(request, 'event_track_home.html', {'user': None, 'events': events})
+        return render(request, 'event_track_home.html', {'user': None, 'events': events, 'categories': categories, 'selected_category': selected_category})
     
     booked_event_ids = set(Event.objects.filter(booked_events__user=current_user).values_list('id', flat=True))
-    return render(request, 'event_track_home.html', {'user': current_user, 'events': events, 'booked_event_ids': booked_event_ids})
+    my_events = set(Event.objects.filter(organizer=current_user).values_list('id', flat=True))
+    return render(request, 'event_track_home.html', 
+                  {'user': current_user, 'events': events, 
+                   'booked_event_ids': booked_event_ids, 
+                   'my_events_ids': my_events,
+                   'categories': categories,
+                   'selected_category': selected_category
+                   })
 
 
 def authorize_user(request):
