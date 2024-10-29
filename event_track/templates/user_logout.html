@@ -15,6 +15,21 @@
 <div>
     <a style="margin: .5rem;" href="/events/">Back to home page</a>
 </div>
+<p style="margin: .5rem;" id="countdown">Redirecting in 3 seconds...</p>
 </nav>
+    
+    <script>
+        let countdownValue = 3;
 
+        const countdownElement = document.getElementById("countdown");
+        const countdownInterval = setInterval(function () {
+            countdownValue -= 1;
+            countdownElement.textContent = "Redirecting in " + countdownValue + " seconds...";
+
+            if (countdownValue <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = "{% url 'event_home' %}";
+            }
+        }, 1000);
+    </script>
 {% endblock %}

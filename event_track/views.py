@@ -21,7 +21,9 @@ def event_home(request):
     events = Event.objects.all()
     categories = Category.objects.all()
 
-    query = str.strip(request.GET.get('query'))
+    query = request.GET.get('query')
+    if query != None:
+        query = str.strip(query)
     selected_category = request.GET.get('category')
 
     if query:
@@ -58,6 +60,7 @@ def event_home(request):
 def authorize_user(request):
     current_user = str(request.user)
     previous_page = request.session['previous_page']
+    next_page = request.GET.get('next')
 
     if current_user == 'AnonymousUser':
         login_form = AuthenticationForm()
@@ -66,6 +69,9 @@ def authorize_user(request):
             if login_form.is_valid():
                 user = login_form.get_user()
                 login(request, user)
+                if next_page != None:
+                    return redirect(next_page)
+                
                 return redirect('event_home')
             
         return render(request, 'user_login.html', {'login_form': login_form})
@@ -205,8 +211,12 @@ def book_an_event(request, event_id):
         if event.is_full:
             return render(request, 'event_fully_booked.html')
         
+        if BookedEvent.objects.filter(user=request.user, event=event).exists():
+            return render(request, 'event_already_booked.html')
+
         booking = BookedEvent.objects.create(user=request.user, event=event)
         return redirect('event_home')
+    
     except Event.DoesNotExist:
         return render(request, 'event_not_found.html')
 

@@ -2,16 +2,16 @@
 
 {% block content %}
 
-<h2 style="margin-left: -200px;">My Events</h2>
-<h4 style="margin-left: -200px;">{{ user.username|add:" - "}}{{user.id}}</h4>
-<nav style="margin-bottom: 10px; margin-left: -200px;">
+<h2 style="margin-left: -100px;">My Events</h2>
+{% include 'event_navbar.html' %}
+<nav style="margin-bottom: 10px; margin-left: -100px;">
     <div style="margin: 0;">
         <a style="margin-right: .5rem; margin-left: 0; padding-left: 0;" href="{% url 'event_home' %}">Home Page</a>
     </div>
 </nav>
 <div>
     {% if events %}
-    <table style="width: 1200px; margin-left: -200px;">
+    <table style="width: 1200px; margin-left: -100px;">
         <tr>
             <th style="width: 220px;">Name</th>
             <th>Desciption</th>

@@ -1,0 +1,11 @@
+{% extends 'event_track_base.html' %}
+
+{% block content %}
+<nav style="margin-bottom: 10px; margin-left: -100px;">
+    <div style="margin: 0;">
+        <a style="margin-right: .5rem; margin-left: 0; padding-left: 0;" href="{% url 'add_event' %}">Add an event</a>
+        <a style="margin: .5rem;" href="{% url 'my_events' %}">Manage Events</a>
+        <a style="margin: .5rem;" href="{% url 'my_booked_events' %}">My Booked Events</a>
+    </div>
+</nav>
+{% endblock %}

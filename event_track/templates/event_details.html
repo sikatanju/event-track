@@ -1,10 +1,14 @@
 {% extends 'event_track_base.html' %}
-
 {% block content %}
-<h2>Event Detail</h2>
+
+<h2 style="margin-left: -100px;">Event Detail</h2>
+{% include 'event_navbar.html' %}
+<div style="margin-left: -100px;">
+    <a style="margin-top: 2rem;" href="{% url 'event_home' %}">Home page</a>
+</div>
 <div>
     {% if event %}
-    <table style="width: 900px;">
+    <table style="width: 1000px; margin-left: -100px;">
         <tr>
             <th>Name</th>
             <th>Desciption</th>
@@ -25,7 +29,5 @@
     {% endif %}
 </div>
 
-<div>
-    <a style="margin-top: 2rem;" href="{% url 'event_home' %}">Home page</a>
-</div>
+
 {% endblock %}
